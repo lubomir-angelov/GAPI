@@ -21,7 +21,7 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   }
   // Authorize a client with the loaded credentials, then call the
   // Directory API.
-  authorize(JSON.parse(content), getCustomerID);
+  authorize(JSON.parse(content), addSchema);
 });
 
 /**
@@ -111,26 +111,37 @@ function getCustomerID(auth){
     var customerId = response.id;
 
     if(!customerId){
-      console.log(customerId);
+      console.log('CustomerID is missing');
+      return;
     } else {
       console.log('CustomerID = ' + customerId);
+      return customerId;
     }
   });
 }
 
-/*function addSchema(auth){
+function addSchema(auth){
 	var service = google.admin('directory_v1');
+  /*var cstId = getCustomerID(auth);
+  console.log(cstId);*/
 
-	service.userschema.insert({
+	service.schema.insert({
 		auth: auth,
-		customerId: 'my_custommer'
+		customerId: 'my_customer',
+    schemaName: 'apiSchema',
+    fields: [
+      {
+        fieldName: 'apiField',
+        fieldType: 'STRING'
+      }
+    ]
 	}, function(err, response) {
     	if (err) {
       	console.log('The API returned an error: ' + err);
       	return;
     }
-    var schemas = response.schemas;
-    console.log(schemas);
+    var schemasFields = response.fields;
+    console.log(response.fields);
 	});
 }
 
