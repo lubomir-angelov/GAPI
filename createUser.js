@@ -98,34 +98,13 @@ function storeToken(token) {
   console.log('Token stored to ' + TOKEN_PATH);
 }
 
-function getCustomerID(auth){
-    var service = google.admin('directory_v1');
-    service.customers.get({
-      auth: auth,
-      customerKey: 'my_customer'
-    }, function(err, response) {
-    if (err) {
-      console.log('The API returned an error: ' + err);
-      return;
-    }
-    var customerId = response.id;
-
-    if(!customerId){
-      console.log('CustomerID is missing');
-      return;
-    } else {
-      console.log('CustomerID = ' + customerId);
-      return customerId;
-    }
-  });
-}
 
 function addSchema(auth){
 	var service = google.admin('directory_v1');
   /*var cstId = getCustomerID(auth);
   console.log(cstId);*/
 
-	service.schema.insert({
+	service.userschema.insert({
 		auth: auth,
 		customerId: 'my_customer',
     schemaName: 'apiSchema',
@@ -143,6 +122,28 @@ function addSchema(auth){
     var schemasFields = response.fields;
     console.log(response.fields);
 	});
+
+  function getCustomerID(auth){
+    var service = google.admin('directory_v1');
+     service.customers.get({
+      auth: auth,
+      customerKey: 'my_customer'
+      }, function(err, response) {
+      if (err) {
+      console.log('The API returned an error: ' + err);
+      return;
+      }
+      var customerId = response.id;
+
+      if(!customerId){
+        console.log('CustomerID is missing');
+        return;
+      } else {
+        console.log('CustomerID = ' + customerId);
+        return customerId;
+      }
+    });
+  }
 }
 
 /*{
